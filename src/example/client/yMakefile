@@ -1,0 +1,41 @@
+export PKG_CONFIG_PATH=/home/y/lib/pkgconfig
+export BASE_DIR=$(shell pwd)/..
+
+ROOT=/home/y
+include $(ROOT)/share/yahoo_cfg/Make.defs
+
+CLEAN +=
+
+ifeq ($(YMK_OS), FreeBSD)
+OPTFLAG += -ftemplate-depth-50
+endif
+
+LIB_NAME =
+SHLIB_VERSION =
+
+EXETARGET = Client
+
+CXXSRC = \
+         Client.cpp \
+
+WARN += -Wall
+
+LINC = \
+	-I./ \
+	-I/usr/local/include \
+	-I/home/y/include \
+	`pkg-config --cflags glib-2.0`
+
+LLDLIBS = \
+    	-L/usr/local/lib -Wl,-rpath,/usr/local/lib \
+        -L/home/y/lib -Wl,-rpath,/home/y/lib \
+        -lzmq \
+        -L../../lib -Wl,-rpath,../../lib \
+        -lkvproxy \
+        -L../server/lib -Wl,-rpath,../server/lib \
+        -lexampleHelpers \
+        `pkg-config --libs glib-2.0 | sed 's/-liconv//'` \
+
+include $(ROOT)/share/yahoo_cfg/Make.rules
+# Do not place any rules or targets above this line
+

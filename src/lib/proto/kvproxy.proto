@@ -1,0 +1,57 @@
+package kvproxy_proto;
+
+message Request {
+    message Header {
+        enum Type {
+            LOOKUP = 1;
+            INSERT = 2;
+            REMOVE = 3;
+        };
+        optional Type type = 1;
+        // uuid for the client. It is application's responsibility
+        // to generate this uuid. This is needed by the proxy server
+        // to dump meaningful analytics
+        optional uint64 clientid = 2;
+        optional int32 debugLevel = 3;
+        optional string trace = 4;
+
+        // all application specific request header data
+        // should be clubbed into Request_Header.payload
+        optional string payload = 5;
+        optional uint32 dataStoreDriverId = 6;
+    };
+    optional Header header = 1;
+    message Payload {
+        optional string key = 1;
+        optional string value = 2;
+        optional bool overwrite = 3;
+    };
+    optional Payload payload = 2;
+};
+
+message Response {
+    message Header {
+        enum ReturnCode {
+            OK = 0;
+            INVALID_KEY_ERR = 1;
+            KEY_NOT_FOUND_ERR = 2;
+            KEY_PRESENT_ERR = 3;
+            INSERTION_ERR = 4;
+            DELETION_ERR = 5;
+            INVALID_REQ_ERR = 6;
+            OTHER_ERR = 7;
+        };
+        optional ReturnCode returnCode = 1;
+        // all application specific response header data
+        // should be clubbed into Response_Header.payload
+        optional string payload = 2;
+    };
+    optional Header header = 1;
+    optional string payload = 2;
+};
+
+// It should be observed that such a simple message format for
+// Request/Response gives us all the flexibility that we might possibly
+// need. To be more specific, an application can have more complex message
+// types, serialize them to string using SerializeToString and then make
+// the above message(s).

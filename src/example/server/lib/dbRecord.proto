@@ -1,0 +1,10 @@
+package myApp_proto;
+
+message Id {
+    optional int32 id = 1; 
+};
+
+message Person {
+    optional string name = 1;
+    optional string phone = 2;
+};
