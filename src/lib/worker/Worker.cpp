@@ -173,7 +173,7 @@ throw(KeyNotFoundException, DeletionException, InvalidRequestException,
     TRACE(std::cout, "");
     m_response = new Response();
     std::string hdrPayld, respData;
-    if (m_msgDriver->requestHasKey(request)) {
+    if (!m_msgDriver->requestHasKey(request)) {
         LOG4CXX_TRACE(logger, "");
         std::stringstream ss;
         ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] "

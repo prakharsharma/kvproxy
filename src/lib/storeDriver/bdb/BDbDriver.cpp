@@ -17,7 +17,7 @@ using namespace bdb_data_store_driver;
 using namespace gen_utils;
 
 static log4cxx::LoggerPtr
-logger(log4cxx::Logger::getLogger("kvproxy.dataStoreDriver.bdb"));
+logger(log4cxx::Logger::getLogger("kvproxy.dataStoreDriver"));
 
 BDbDriver::BDbDriver(std::string dbHome, std::string dbPath, int flags,
         int pageSz) {
@@ -65,16 +65,26 @@ std::string BDbDriver::lookup(const std::string &key) const
 throw(KeyNotFoundException) {
     TRACE(std::cout, "");
     Dbt d_key((void *)key.data(), key.size());
-    d_key.set_flags(DB_DBT_MALLOC);
+    //d_key.set_flags(DB_DBT_MALLOC);
+    //int exists = m_db->exists(NULL, &d_key, 0);
+    //if (exists  == DB_NOTFOUND) {
+    //    TRACE(std::cout, "");
+    //    std::stringstream ss;
+    //    if (logger->getLevel()->toString().compare("TRACE") == 0) {
+    //        ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
+    //    }
+    //    ss<<"Key not found in Berkeley DB.\n";
+    //    throw KeyNotFoundException(ss.str());
+    //}
     Dbt val;
     val.set_flags(DB_DBT_MALLOC);
     int exists = m_db->get(NULL, &d_key, &val, DB_READ_UNCOMMITTED);
     if (exists == DB_NOTFOUND) {
         TRACE(std::cout, "");
         std::stringstream ss;
-        if (logger->getLevel()->toString().compare("TRACE") == 0) {
+        //if (logger->getLevel()->toString().compare("TRACE") == 0) {
             ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-        }
+        //}
         ss<<"Key not found in Berkeley DB.\n";
         throw KeyNotFoundException(ss.str());
     }
@@ -96,26 +106,26 @@ void BDbDriver::insert(const std::string &key, const std::string &val,
         if (ret == DB_KEYEXIST) {
             TRACE(std::cout, "");
             std::stringstream ss;
-            if (logger->getLevel()->toString().compare("TRACE") == 0) {
+            //if (logger->getLevel()->toString().compare("TRACE") == 0) {
                 ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-            }
+            //}
             ss<<"Key already present in Berkeley DB.\n";
             throw KeyPresentException(ss.str());
         }
     } catch (DbException &e) {
         TRACE(std::cout, "");
         std::stringstream ss;
-        if (logger->getLevel()->toString().compare("TRACE") == 0) {
+        //if (logger->getLevel()->toString().compare("TRACE") == 0) {
             ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-        }
+        //}
         ss<<"Insertion into Berkeley DB Failed.\n";
         throw InsertionException(ss.str());
     } catch (std::exception &e) {
         TRACE(std::cout, "");
         std::stringstream ss;
-        if (logger->getLevel()->toString().compare("TRACE") == 0) {
+        //if (logger->getLevel()->toString().compare("TRACE") == 0) {
             ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-        }
+        //}
         ss<<"Insertion into Berkeley DB Failed.\n";
         throw InsertionException(ss.str());
     }
@@ -130,26 +140,26 @@ void BDbDriver::remove(const std::string &key) throw(KeyNotFoundException,
         if (ret == DB_NOTFOUND) {
             TRACE(std::cout, "");
             std::stringstream ss;
-            if (logger->getLevel()->toString().compare("TRACE") == 0) {
+            //if (logger->getLevel()->toString().compare("TRACE") == 0) {
                 ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-            }
+            //}
             ss<<"Key not found in Berkeley DB for deletion.\n";
             throw KeyNotFoundException(ss.str());
         }
     } catch (DbException &e) {
         TRACE(std::cout, "");
         std::stringstream ss;
-        if (logger->getLevel()->toString().compare("TRACE") == 0) {
+        //if (logger->getLevel()->toString().compare("TRACE") == 0) {
             ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-        }
+        //}
         ss<<"Error while deleting from Berkeley DB. Error = "<<e.what()<<"\n";
         throw DeletionException(ss.str());
     } catch (std::exception &e) {
         TRACE(std::cout, "");
         std::stringstream ss;
-        if (logger->getLevel()->toString().compare("TRACE") == 0) {
+        //if (logger->getLevel()->toString().compare("TRACE") == 0) {
             ss<<"["<<__FUNCTION__<<"@"<<__FILE__<<":"<<__LINE__<<"] ";
-        }
+        //}
         ss<<"Error while deleting from Berkeley DB. Error = "<<e.what()<<"\n";
         throw DeletionException(ss.str());
     }

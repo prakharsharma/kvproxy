@@ -49,7 +49,6 @@ void ProxyServer::run() {
             case Request_Header_Type_LOOKUP:
                 {
                     TRACE(std::cout, "");
-                    START_LATENCY_MEASURE(latency);
                     try {
                         m_worker->lookup(req);
                     } catch (KeyNotFoundException &e) {
@@ -58,14 +57,11 @@ void ProxyServer::run() {
                                 <<e.what());
                     }
                     resp = m_worker->response();
-                    END_LATENCY_MEASURE(latency, "latency", m_sb, true);
-                    END_LATENCY_MEASURE(latency, "lookupLatency", m_sb, true);
                     break;
                 }
             case Request_Header_Type_INSERT:
                 {
                     TRACE(std::cout, "");
-                    START_LATENCY_MEASURE(latency);
                     try {
                         m_worker->insert(req);
                     } catch (KeyPresentException &e) {
@@ -78,14 +74,11 @@ void ProxyServer::run() {
                                 <<e.what());
                     }
                     resp = m_worker->response();
-                    END_LATENCY_MEASURE(latency, "latency", m_sb, true);
-                    END_LATENCY_MEASURE(latency, "insertionLatency", m_sb, true);
                     break;
                 }
             case Request_Header_Type_REMOVE:
                 {
                     TRACE(std::cout, "");
-                    START_LATENCY_MEASURE(latency);
                     try {
                         m_worker->remove(req);
                     } catch (KeyNotFoundException &e) {
@@ -98,8 +91,6 @@ void ProxyServer::run() {
                                 <<e.what());
                     }
                     resp = m_worker->response();
-                    END_LATENCY_MEASURE(latency, "latency", m_sb, true);
-                    END_LATENCY_MEASURE(latency, "deletionLatency", m_sb, true);
                     break;
                 }
             default:
