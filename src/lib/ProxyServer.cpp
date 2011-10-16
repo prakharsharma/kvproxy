@@ -17,16 +17,6 @@ using namespace kvproxy_proto;
 using namespace kvproxy_data_store_driver;
 using namespace kvproxy_msg_driver;
 
-//#define START_LATENCY_MEASURE(x) ymonsb_sw_t (x) = YMONSB_SW_INIT(); \
-//                                       ymonsb_sw_start(&(x));
-//#define END_LATENCY_MEASURE(x, metricName, sb, record) ymonsb_sw_stop(&(x)); \
-//    if ((record)) { \
-//        ymonsb_set((sb), NULL, (metricName), ymonsb_sw_duration(&(x))); \
-//    }
-
-#define START_LATENCY_MEASURE(x)
-#define END_LATENCY_MEASURE(x, metricName, sb, record)
-
 static log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("kvproxy.proxyServer"));
 
 void ProxyServer::run() {
@@ -55,7 +45,6 @@ void ProxyServer::run() {
         }
         Response *resp = NULL;
         // All the anlytics will be logged in this function
-        //ymonsb_increment(m_sb, NULL, "requests", 1);
         switch (req.header().type()) {
             case Request_Header_Type_LOOKUP:
                 {
@@ -67,7 +56,6 @@ void ProxyServer::run() {
                         TRACE(std::cout, "");
                         LOG4CXX_DEBUG(logger, "Key not found in store: "
                                 <<e.what());
-                        //ymonsb_increment(m_sb, NULL, "keyNotFound", 1);
                     }
                     resp = m_worker->response();
                     END_LATENCY_MEASURE(latency, "latency", m_sb, true);
@@ -84,12 +72,10 @@ void ProxyServer::run() {
                         TRACE(std::cout, "");
                         LOG4CXX_DEBUG(logger, "Key already present in"
                                 " store: "<<e.what());
-                        //ymonsb_increment(m_sb, NULL, "keyAlreadyPresent", 1);
                     } catch (InsertionException &e) {
                         TRACE(std::cout, "");
                         LOG4CXX_DEBUG(logger, "Insertion error: "
                                 <<e.what());
-                        //ymonsb_increment(m_sb, NULL, "insertionError", 1);
                     }
                     resp = m_worker->response();
                     END_LATENCY_MEASURE(latency, "latency", m_sb, true);
@@ -106,12 +92,10 @@ void ProxyServer::run() {
                         TRACE(std::cout, "");
                         LOG4CXX_DEBUG(logger, "Key not found in store: "
                                 <<e.what());
-                        //ymonsb_increment(m_sb, NULL, "keyNotFound", 1);
                     } catch (DeletionException &e) {
                         TRACE(std::cout, "");
                         LOG4CXX_DEBUG(logger, "Deletion error: "
                                 <<e.what());
-                        //ymonsb_increment(m_sb, NULL, "deletionError", 1);
                     }
                     resp = m_worker->response();
                     END_LATENCY_MEASURE(latency, "latency", m_sb, true);
@@ -121,11 +105,9 @@ void ProxyServer::run() {
             default:
                 {
                     TRACE(std::cout, "");
-                    //ymonsb_increment(m_sb, NULL, "badRequestType", 1);
                     break;
                 }
         };
-        //ymonsb_sync(m_sb, YMONSB_DIRECT);
         if (m_respPrinter) {
             TRACE(std::cout, "");
             LOG4CXX_TRACE(logger, "Response : "<<(m_respPrinter(*resp)));
@@ -141,7 +123,6 @@ void ProxyServer::run() {
 }
 
 ProxyServer::~ProxyServer() {
-    //ymonsb_close(m_sb);
 }
 
 ProxyServer::ProxyServer(std::string appName, std::string proto,
@@ -153,9 +134,6 @@ ProxyServer::ProxyServer(std::string appName, std::string proto,
                                      m_reqPrinter(reqPrinter),
                                      m_msgDriver(msgDriver),
                                      m_respPrinter(respPrinter) {
-                                         //m_sb = ymonsb_open(appName.c_str(),
-                                         //        YMONSB_OPEN_DEFAULT |
-                                         //        YMONSB_OPEN_BUFFERED);
                           }
 //
 

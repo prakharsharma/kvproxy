@@ -2,7 +2,6 @@
 #define _PROXY_SERVER_H_
 
 #include <string>
-//#include <ymonsb.h>
 #include "worker/Worker.h"
 #include "proto/kvproxy.pb.h"
 #include "msgDriver/MsgDriver.h"
@@ -28,7 +27,6 @@ namespace kvproxy_server {
             std::string m_port;
             kvproxy_worker::Worker *m_worker;
             const kvproxy_msg_driver::MsgDriver *m_msgDriver;
-            //ymonsb m_sb;
             RequestPrintFunc m_reqPrinter;
             ResponsePrintFunc m_respPrinter;
     };
