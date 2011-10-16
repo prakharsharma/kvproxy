@@ -10,7 +10,7 @@ key, value store. The objectives are following: -
 3. To be exteremely light weight,
 4. To be extremely fast, and
 5. Laser focus on developer efficiency (new user should be able to setup
-solution to his use case in half a day)
+solution to his non trivial use case in matter of handful of hours)
 
 #1 is attained by using Google protobufs
 #2 and #3 are attained by using ZMQ
@@ -28,17 +28,20 @@ Customization options ?
 ===========================
 
 1. Data store driver, e.g. Berkeley driver, LevelDB driver.
-2. Lookup module driver.
-3. Data driver.
+2. Lookup module driver; to override default behavior of directly looking up a
+   key on key-value store.
+3. Data driver; for fetching information from user's proto fomrat.
 
 It does not matters how that key, value store is being implemented. It can
-be a berkeley db, mdbm, or say even MobStor. For being generic, Google
+be a berkeley db, dbm, LevelDB, or anything. Just implement a driver for your
+key-value store and you are good to go. For being generic, Google
 protobufs are used throughout for data interchange. For being fast, ZMQ is
 used for providing communication library between client and server. As
 protobuf and ZMQ bindings are avaialble for all the major languages, so
 developer is free to write client in any of these languages. Developer can
 insert his business logic on the server (lookup module). For the
 time being, this has to be in C++. Choice of ZMQ also liberates our
-framework from a single communication protocol (TCP/UDP). This means user is
+framework from a single communication protocol (TCP/PGM/ipc). This means user is
 free to make his own decision depending on latency and reliability
 requirements of his application.
+
