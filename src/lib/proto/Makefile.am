@@ -1,6 +1,6 @@
 export PROTO_PATH=/usr/bin
 
-ACLOCAL_AMFLAGS = -I m4
+#ACLOCAL_AMFLAGS = -I m4
 AM_CXXFLAGS = -I/usr/local/include/ -I/usr/include/
 AM_LDFLAGS = \
              -L/usr/local/lib/ -Wl,-rpath \
@@ -18,5 +18,5 @@ SUBDIRS=
 # Application specific rules
 kvproxy.pb.cc: kvproxy.pb.h
 
-kvproxy.pb.cc: ./kvproxy.proto
+kvproxy.pb.h: ./kvproxy.proto
 	$(PROTO_PATH)/protoc --cpp_out=./ kvproxy.proto
